@@ -4,22 +4,20 @@ import React, { Component } from 'react';
 
 import {
   StyleSheet,
+  ScrollView,
   View,
+  Text
 } from 'react-native';
 
-import BTRow from './BTRow'
+import NavigatorApp from './Navigator.js';
 
 class App extends Component {
   render() {
     return (
-      <BTRow />
+    	<NavigatorApp />
     );
   }
 }
-
-const styles = StyleSheet.create({
-
-});
 
 
 export default App;
