@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import Index from './Index';
+import ModelExmple from './ModelExmple';
 
 // 导航栏
 const NavigationBarRouteMapper = {
@@ -49,31 +50,53 @@ class NavigatorApp extends Component {
 	constructor(props) {
 	  super(props);
 		this._renderScene=this._renderScene.bind(this);
-	  this.state = {};
+	  this.state = {
+      modalVisible: false,
+    };
 	}
 
 	_renderScene(route, navigator) {
+    const { modalVisible } = this.state;
 		let Scene = route.component;
 
 		return (
-			<Scene navigator={navigator} />
+      <View style={{flex: 1}}>
+        <ModelExmple
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          closeModel={() => this.setState({modalVisible: false})}
+          onShow={() => console.log('modelShow')}
+        />
+        <Scene 
+          navigator={navigator}
+          showModel={() => {
+            this.setState({modalVisible: true});
+
+            setTimeout(() => this.setState({modalVisible: false}), 2000);
+          }}
+        />
+      </View>
 		);
 	}
 
   render() {
-    return (
-      <Navigator
-      	initialRoute={{title: '主页', component: Index}}
-      	renderScene={this._renderScene}
-        sceneStyle={styles.scene}
-        navigationBar={
-          <Navigator.NavigationBar
-            routeMapper={NavigationBarRouteMapper}
-            style={styles.navBar}
-          />
-        }
+    let { showNavBar } = this.state;
+    const navigationBar = (
+      <Navigator.NavigationBar
+        routeMapper={NavigationBarRouteMapper}
+        style={[styles.navBar]}
       />
     );
+
+    
+      return (
+        <Navigator
+          initialRoute={{title: '主页', component: Index, navBar: true}}
+          renderScene={this._renderScene}
+          navigationBar={navigationBar}
+        />
+      );
   }
 }
 

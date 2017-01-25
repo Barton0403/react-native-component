@@ -7,24 +7,65 @@ import {
   View,
   Text,
   Dimensions,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native';
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
+
+class IconButton extends Component {
+	render() {
+		const { onPress, icon, color, title } = this.props;
+
+		return (
+			<TouchableWithoutFeedback onPress={onPress} style={{flex: 1, borderColor: '#ccc', borderWidth: 1}}>
+				<View style={styles.iconButton}>
+					<Icon name={icon} color={color} size={30} />
+					<Text style={[styles.title, {color: color}]}>{title}</Text>
+				</View>
+			</TouchableWithoutFeedback>
+		);
+	}
+}
+
+class TabBar extends Component {
+	render() {
+		const { onSelect, selectedIndex, children } = this.props;
+
+		return (
+				<View style={styles.tabBar}>
+	        {
+	          children.map((tab, index) => (
+	            <IconButton
+	            	key={index}
+	            	color={selectedIndex === index ? "#3b5998" : "#ccc"}
+	            	icon={tab.props.icon}
+	            	title={tab.props.title}
+	            	onPress={() => onSelect(index)}
+	            />
+	          ))
+	        }
+	      </View>
+		);
+	}
+}
 
 class Tabs extends Component {
 	constructor(props) {
 	  super(props);
+
+	  this._selectTab = this._selectTab.bind(this);
+
 		let { children } = props;
 	  this.state = {
 	  	selectedIndex: 0, 
-			routes: {
+	  	// 设置已经加载的tab
+			tabs: {
 				[children[0].props.name]: children[0],
 			},
 	  };
 	}
 
-	selectTab(index) {
-		let { routes, selectedIndex } = this.state;
+	_selectTab(index) {
+		let { tabs, selectedIndex } = this.state;
 		let { children } = this.props;
 
 		if (index === selectedIndex) {
@@ -34,13 +75,13 @@ class Tabs extends Component {
 		// 储存新的状态
 		let state;
 		let nextkey = children[index].props.name
-		let nextScene = routes[nextkey];
-		// 判断是否已经加入
+		let nextScene = tabs[nextkey];
+		// 判断是否已经加载
 		if (!nextScene) {
 			state = {
 	  		selectedIndex: index,
-	  		routes: {
-					...routes,
+	  		tabs: {
+					...tabs,
 					[nextkey]: children[index]
 	  		}
 			}
@@ -53,40 +94,9 @@ class Tabs extends Component {
 		this.setState(state);
 	}
 
-	renderTabBar() {
-		let { children } = this.props;
-		let { selectedIndex } = this.state;
-
-		// 添加底部导航栏
-		return(
-			<View style={styles.tabBar}>
-				<View style={styles.row}>
-	        {
-	          children.map((tab, index) => (
-	            <TouchableOpacity
-	              key={index}
-	              onPress={() => this.selectTab(index)}>
-	              <View style={styles.item}>
-	                <Icon name={tab.props.name} size={30}
-	                  color={selectedIndex === index ? '#3b5998' : '#ccc'}
-	                  style={styles.icon}
-	                />
-	                <Text style={[styles.title,
-	                  selectedIndex === index ? {color: '#3b5998'} : {color: '#ccc'}]}>
-	                  {tab.props.title}
-	                </Text>
-	              </View>
-	            </TouchableOpacity>
-	          ))
-	        }
-	      </View>
-			</View>
-		);
-	}
-
   render() {
   	let { children } = this.props;
-  	let { selectedIndex, routes } = this.state;
+  	let { selectedIndex, tabs } = this.state;
 
     return (
 	  	<View style={styles.container}>
@@ -95,11 +105,16 @@ class Tabs extends Component {
 	  				<View
 	  					key={index}
 	  					style={[styles.tab, selectedIndex === index && { zIndex: 999 }]}>
-	  					{routes[tab.props.name] && tab}
+	  					{tabs[tab.props.name] && tab}
 	  				</View>
 	  			))
 	  		}
-	  		{this.renderTabBar()}
+	  		<TabBar
+	  			onSelect={this._selectTab}
+	  			selectedIndex={selectedIndex}
+	  			>
+	  			{children}
+	  		</TabBar>
 	  	</View>
     );
   }
@@ -108,8 +123,8 @@ class Tabs extends Component {
 const styles = StyleSheet.create({
 	container: {
 		// 防止TabBar被键盘上推
-		// 25 状态栏高度，44 顶部导航高度 
-		height: height - 25 - 44,
+		// 25 状态栏高度
+		height: height - 25,
 		width,
 	},
 	tab:{
@@ -122,30 +137,24 @@ const styles = StyleSheet.create({
 	},
 	tabBar: {
 		height: 60,
+		flexDirection: 'row',
 		position: 'absolute',
 		left: 0,
 		right: 0,
 		bottom: 0,
 	},
-	row: {
-		flexDirection: 'row',
-    backgroundColor: '#fff',
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'space-around'
+	iconButton: {
+		flex: 1,
+		paddingTop: 10,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#fff',
 	},
-  item: {
-    width: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  icon: {
-    paddingTop: 10,
-  },
-  title: {
-    fontSize: 10,
-    color: '#ccc'
-  }
+	title: {
+		fontSize: 10,
+		fontWeight: '200',
+		color: '#ccc',
+	}
 });
 
 

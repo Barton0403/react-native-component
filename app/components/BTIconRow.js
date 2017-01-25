@@ -5,47 +5,63 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   StyleSheet,
   View,
+  Text,
   PixelRatio,
+  TouchableHighlight
 } from 'react-native';
 
-class BTIconRow extends Component {
-  render() {
-  	const { onPress, name, backgroundColor } = this.props;
+class IconButton extends Component {
+	render() {
+		const { onPress, name, color, title } = this.props;
 
+		return (
+			<TouchableHighlight onPress={onPress} style={{flex: 1}}>
+				<View style={styles.iconButton}>
+					<Icon name={name} color={color} size={30} />
+					<Text style={styles.title}>{title}</Text>
+				</View>
+			</TouchableHighlight>
+		);
+	}
+}
+
+class BTIconRow extends Component {
+	constructor(props) {
+	  super(props);
+
+	  // 测试使用，正式中需分配多个按钮事件
+		this._onPress = this._onPress.bind(this);
+	}
+
+	_onPress() {
+		alert('test');
+	}
+
+  render() {
     return (
     	<View style={styles.row}>
-				<Icon.Button
-					iconStyle={styles.iconButton}
-					name="qq"
-					borderRadius={0}
-					backgroundColor="#3b5998"
-					color="#fff"
-					size={30}
-					onPress={() => alert(1)} />
-				<Icon.Button
-					iconStyle={styles.iconButton}
-					name="qq"
-					borderRadius={0}
-					backgroundColor="transparent"
-					color="#3b5998"
-					size={30}
-					onPress={() => alert(2)} />
-				<Icon.Button
-					iconStyle={styles.iconButton}
-					name='qq'
-					borderRadius={0}
-					backgroundColor="#3b5998"
-					color="#fff"
-					size={30}
-					onPress={() => alert(3)} />
-				<Icon.Button
-					iconStyle={styles.iconButton}
-					name='qq'
-					borderRadius={0}
-					size={30}
-					backgroundColor="transparent"
-					color="#3b5998"
-					onPress={() => alert(4)} />
+	    	<IconButton
+	    		onPress={this._onPress}
+	    		name="qq"
+	    		color="#3b5998"
+	    		title="qq"
+	    	/>
+	    	<IconButton
+	    		onPress={this._onPress}
+	    		name="qq"
+	    		color="#3b5998"
+	    		title="qq"
+	    	/><IconButton
+	    		onPress={this._onPress}
+	    		name="qq"
+	    		color="#3b5998"
+	    		title="qq"
+	    	/><IconButton
+	    		onPress={this._onPress}
+	    		name="qq"
+	    		color="#3b5998"
+	    		title="qq"
+	    	/>
     	</View>
     );
   }
@@ -55,16 +71,23 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
-		backgroundColor: '#fff',
 		borderColor: '#ccc',
 		borderTopWidth: 1 / PixelRatio.get(),
 		borderBottomWidth: 1 / PixelRatio.get(),
+		height: 60,
 	},
 	iconButton: {
-		marginLeft: 10,
-		marginRight: 10,
-		marginVertical: 10,
+		flex: 1,
+		paddingTop: 5,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#fff',
 	},
+	title: {
+		fontSize: 10,
+		fontWeight: '200',
+		color: '#000',
+	}
 });
 
 

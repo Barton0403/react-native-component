@@ -10,18 +10,13 @@ import {
 } from 'react-native';
 
 import Tabs from './Tabs';
-import BTRow from './BTRow';
 
 // Tab界面
 class MyTab extends Component {
 	render() {
 		return (
-			<View>
+			<View style={{marginTop: 56}}>
 				<TextInput defaultValue={this.props.title} />
-				<BTRow
-					text="返回"
-					onPress={() => this.props.navigator.pop()}
-				/>
 			</View>
 		);
 	}
@@ -31,9 +26,9 @@ class tabsExmple extends Component {
   render() {
     return (
       <Tabs>
-      	<MyTab name="inbox" title="主页" navigator={this.props.navigator} />
-      	<MyTab name="history" title="历史" navigator={this.props.navigator} />
-      	<MyTab name="user-secret" title="个人" navigator={this.props.navigator} />
+      	<MyTab icon="inbox" title="主页" navigator={this.props.navigator} />
+      	<MyTab icon="history" title="历史" navigator={this.props.navigator} />
+      	<MyTab icon="user-secret" title="个人" navigator={this.props.navigator} />
       </Tabs>
     );
   }
